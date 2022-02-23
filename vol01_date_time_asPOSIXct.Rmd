@@ -1,0 +1,106 @@
+---
+title: "vol.01 A brief intro of date/time data analysis"
+output: html_notebook
+---
+
+EXAMPLE 1 
+```{r}
+t1 = '2022-02-22 22:22:22'
+class(t1)
+
+t1 = as.POSIXct(t1)
+class(t1)
+
+```
+
+EXAMPLE 2
+```{r}
+t2 = '2022/02/22T22:22:22'
+class(t2)
+
+t2 = as.POSIXct(t2, format = '%Y/%m/%dT%H:%M:%S')
+class(t2)
+
+t2
+
+```
+
+EXAMPLE 3
+```{r}
+library(lubridate)
+
+t3 <- as.POSIXct('2022-02-23 23:23:23', tz = 'UTC')
+t3
+
+t4 <- as.POSIXct('2022-02-24 01:00:00', tz = 'America/New_York')
+t4
+
+with_tz(t4, 'GMT') # with_tz is in lubridate package
+
+```
+
+EXAMPLE 4
+```{r}
+t5 = 1645564942
+t5 = as.POSIXct(t5, origin='1970-01-01')
+t5
+
+t5 = 1645564942
+t5 = as.POSIXct(t5, origin='1980-01-01')
+t5
+
+```
+
+EXAMPLE 5
+```{r}
+library(ggplot2)
+library(scales)
+
+# generate fake temperature profiles
+set.seed(2022)
+
+a = 4
+b = 7
+amp = 2
+n = 7*24*4 # 7 day, 24 hours, every 15 min.
+t = seq(0,2*pi,,n)
+h.norm = rnorm(n)
+
+h.temp = a*sin(b*t+1.5*pi) + h.norm*amp +25
+
+# generate datetime data
+dt = seq.POSIXt(as.POSIXct("2022-02-01 0:0:0"), as.POSIXct("2022-02-07 23:45:00"), tz = "Europe/Berlin", by = "15 min")
+
+# create metadata
+df.temp = data.frame(datetime = dt, temptr = h.temp)
+
+# plotting
+pd = position_dodge(0.1)
+
+p.temp = ggplot(df.temp, aes(x=datetime, y=temptr))+
+  geom_line(size=1.5, col = 'red')+
+  xlab("Measuring time") +
+  ylab(expression(bold(paste('Measured temperature (',~degree,'C)',sep='')))) +
+  ylim(15, 35) +
+  scale_x_datetime(labels = date_format("%m/%d/%y"), 
+                   breaks = date_breaks("1 day")) +
+  ggtitle(expression(bold(paste("Air temperature variation")))) +
+  theme(
+    plot.title = element_text(color = "blue", size = 20, face = "bold", hjust = 0.5),
+    axis.title.x = element_text(size = 15, face="bold"),
+    axis.title.y = element_text(size = 15, face="bold"),
+    axis.text.x = element_text(size = 12, face="bold"),
+    axis.text.y = element_text(size = 12, face="bold"))
+p.temp
+
+```
+
+
+
+
+
+
+
+
+
+

@@ -94,13 +94,3 @@ p.temp = ggplot(df.temp, aes(x=datetime, y=temptr))+
 p.temp
 
 ```
-
-
-
-
-
-
-
-
-
-
